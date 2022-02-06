@@ -25,4 +25,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             """, nativeQuery = true)
     List<Post> findSortedTagSorted();
 
+    @Query(value = """
+            select p
+                from Post p
+            where lower(p.content) like ?1
+            """)
+    List<Post> findPostsByContentSubString(String subString);
+
 }

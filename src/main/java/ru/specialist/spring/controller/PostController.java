@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.specialist.spring.entity.User;
 import ru.specialist.spring.repository.PostRepository;
 import ru.specialist.spring.repository.UserRepository;
@@ -27,8 +28,14 @@ public class PostController {
     }
 
     @GetMapping
-    public String posts(ModelMap model){
-        model.put("posts", postRepository.findAll());
+    public String posts(@RequestParam(required = false) String search, ModelMap model){
+        if (search != null && !search.isEmpty()){
+            model.put("posts", postRepository.findPostsByContentSubString("%" + search.trim().toLowerCase() + "%"));
+        }
+            else {
+            model.put("posts", postRepository.findAll());
+        }
+
         setCommonParams(model);
         return "blog";
     }
