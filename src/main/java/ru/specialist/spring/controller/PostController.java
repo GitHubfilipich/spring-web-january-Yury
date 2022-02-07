@@ -6,10 +6,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.specialist.spring.entity.Post;
 import ru.specialist.spring.entity.User;
 import ru.specialist.spring.repository.PostRepository;
 import ru.specialist.spring.repository.UserRepository;
 import ru.specialist.spring.service.UserService;
+
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -30,7 +33,9 @@ public class PostController {
     @GetMapping
     public String posts(@RequestParam(required = false) String search, ModelMap model){
         if (search != null && !search.isEmpty()){
-            model.put("posts", postRepository.findPostsByContentSubString("%" + search.trim().toLowerCase() + "%"));
+            List<Post> posts = postRepository.findPostsByContentSubString("%" + search.trim().toLowerCase() + "%");
+            model.put("posts", posts);
+            model.put("subtitle", "Blogs contaning: '" + search.trim() + "' (" + posts.size() + ")");
         }
             else {
             model.put("posts", postRepository.findAll());
