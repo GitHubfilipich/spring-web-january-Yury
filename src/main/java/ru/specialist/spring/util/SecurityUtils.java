@@ -1,9 +1,14 @@
 package ru.specialist.spring.util;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.specialist.spring.entity.Post;
+import ru.specialist.spring.entity.Role;
+import ru.specialist.spring.entity.User;
+
+import java.util.stream.Collectors;
 
 
 public class SecurityUtils {
@@ -22,9 +27,27 @@ public class SecurityUtils {
     }
 
     public static void checkAuthorityOnPost(Post post) {
-        String username = SecurityUtils.getCurrentUserDetails().getUsername();
-        if (!post.getUser().getUsername().equals(username)){
+        if (!hasAuthorityOnPost(post)){
             throw new AccessDeniedException(ACCESS_DENIED);
         }
+    }
+
+    public static void checkAuthorityOnPostOrUserIsAdmin(Post post){
+        if (!hasAuthorityOnPost(post) && !hasRole(Role.ADMIN)){
+            throw new AccessDeniedException(ACCESS_DENIED);
+        }
+    }
+
+    public static boolean hasAuthorityOnPost(Post post){
+        String username = SecurityUtils.getCurrentUserDetails().getUsername();
+        return post.getUser().getUsername().equals(username);
+    }
+
+    public static boolean hasRole(String role) {
+        return getCurrentUserDetails().getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet())
+                .contains(User.ROLE + role);
     }
 }

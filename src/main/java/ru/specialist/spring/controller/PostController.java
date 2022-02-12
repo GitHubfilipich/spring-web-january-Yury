@@ -2,14 +2,12 @@ package ru.specialist.spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.specialist.spring.dto.PostDto;
 import ru.specialist.spring.entity.Post;
 import ru.specialist.spring.entity.User;
@@ -19,6 +17,8 @@ import ru.specialist.spring.service.PostService;
 import ru.specialist.spring.service.UserService;
 import ru.specialist.spring.util.SecurityUtils;
 
+import javax.servlet.ServletContext;
+
 @Controller
 public class PostController {
 
@@ -26,16 +26,19 @@ public class PostController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final PostService postService;
+    private final ServletContext servletContext;
 
     @Autowired
     public PostController(PostRepository postRepository,
                           UserRepository userRepository,
                           UserService userService,
-                          PostService postService) {
+                          PostService postService,
+                          ServletContext servletContext) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.postService = postService;
+        this.servletContext = servletContext;
     }
 
     @GetMapping
@@ -79,8 +82,8 @@ public class PostController {
     @PostMapping("/post/new")
     @PreAuthorize("hasRole('USER')")
     public String postNew(PostDto postDto){
-        postService.create(postDto);
-        return "redirect:/";
+        Long postId = postService.create(postDto);
+        return "redirect:/post/" + postId;
     }
 
 
@@ -99,13 +102,26 @@ public class PostController {
     @PreAuthorize("hasRole('USER')")
     public String postEdit(PostDto postDto){
         postService.update(postDto);
-        return "redirect:/";
+        return "redirect:/post/" + postDto.getPostId();
     }
 
+    @GetMapping("/post/{postId}")
+    public String post(@PathVariable Long postId, ModelMap model){
+        model.put("post", postService.findById(postId));
+        setCommonParams(model);
+        return "post";
+    }
+
+    @PostMapping("/post/{postId}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void postDelete(@PathVariable Long postId){
+        postService.delete(postId);
+    }
 
 
 
     private void setCommonParams(ModelMap model) {
         model.put("users", userRepository.findAll());
+        model.put("contextPath", servletContext.getContextPath());
     }
 }

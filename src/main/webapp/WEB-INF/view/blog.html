@@ -9,7 +9,7 @@
 
 </head>
 
-<!--<script type="text/javascript" th:src="@{/resources/js/delete-post.js}"></script>-->
+<script type="text/javascript" th:src="@{/resources/js/delete-post.js}"></script>
 
 <body>
 
@@ -41,10 +41,9 @@
                     <a  th:if="${#authentication.name == post.user.username}"
                         th:href="@{/post/{postId}/edit(postId = ${post.postId})}"
                         class="btn btn-secondary">Edit</a>
-<!--                    <a th:if="${#authentication.name == post.user.username or #authorization.expression('hasRole(''ADMIN'')')}"-->
-<!--                       th:onclick="'deletePost(\'' + ${post.postId} + '\');'"-->
-<!--                       class="btn btn-danger">Delete</a>-->
-
+                    <a th:if="${#authentication.name == post.user.username or #authorization.expression('hasRole(''ADMIN'')')}"
+                       th:onclick="'deletePost(\'' + ${post.postId} + '\');'"
+                       class="btn btn-danger">Delete</a>
                 </div>
                 <div class="card-footer text-muted">
                     Posted on <span

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.specialist.spring.util.SecurityUtils.getCurrentUserDetails;
+import static ru.specialist.spring.util.SecurityUtils.*;
 
 @Service
 @Transactional
@@ -39,7 +39,7 @@ public class PostService {
     }
 
     @PreAuthorize("hasRole('USER')")
-    public void create(PostDto postDto) {
+    public Long create(PostDto postDto) {
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
@@ -48,7 +48,7 @@ public class PostService {
                         .getUsername())
                 .orElseThrow());
         post.setDtCreated(LocalDateTime.now());
-        postRepository.save(post);
+        return postRepository.save(post).getPostId();
     }
 
     private List<Tag> parseTags(String tags) {
@@ -93,5 +93,11 @@ public class PostService {
 
         post.setDtUpdated(LocalDateTime.now());
         postRepository.save(post);
+    }
+
+    public void delete(Long postId) {
+        checkAuthorityOnPostOrUserIsAdmin(
+                postRepository.findById(postId).orElseThrow());
+        postRepository.deleteById(postId);
     }
 }
