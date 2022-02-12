@@ -1,13 +1,21 @@
 package ru.specialist.spring.entity;
 
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name ="\"user\"")
-public class User {
+public class User implements UserDetails {
+
+    public static final String ROLE = "ROLE_";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +55,36 @@ public class User {
 
     public void setUsername(String username) { this.username = username; }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles().stream()
+                .map(r -> new SimpleGrantedAuthority(ROLE + r.getName()))
+                .collect(Collectors.toList());
+    }
+
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return getIsActive();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return getIsActive();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return getIsActive();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return getIsActive();
+    }
 
     public List<Post> getPosts() { return posts; }
 
@@ -57,9 +92,9 @@ public class User {
 
     public boolean getIsActive() { return isActive; }
 
-    public void setActive(boolean active) { isActive = active; }
+    public void setIsActive(boolean active) { isActive = active; }
 
-    public LocalDateTime getdtCreated() { return dtCreated; }
+    public LocalDateTime getDtCreated() { return dtCreated; }
 
-    public void setdtCreated(LocalDateTime dtCreated) { this.dtCreated = dtCreated; }
+    public void setDtCreated(LocalDateTime dtCreated) { this.dtCreated = dtCreated; }
 }

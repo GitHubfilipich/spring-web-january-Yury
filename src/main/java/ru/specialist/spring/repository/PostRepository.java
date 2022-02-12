@@ -1,5 +1,6 @@
 package ru.specialist.spring.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.specialist.spring.entity.Post;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Optional<Post> findByTitle(String title);
+    List<Post> findByTitle(String title);
 
     List<Post> findByDtCreatedBetween(LocalDateTime from, LocalDateTime to);
 
@@ -24,5 +25,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             order by count(*) desc
             """, nativeQuery = true)
     List<Post> findSortedTagSorted();
+
+    List<Post> findByContentContainingIgnoreCase(String content, Sort sort);
+
+
 
 }

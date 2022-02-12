@@ -20,8 +20,7 @@ public class TagService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void create(String name){
-        Tag tag = new Tag();
-        tag.setName(name);
+        Tag tag = new Tag(name);
         tagRepository.save(tag);
     }
 

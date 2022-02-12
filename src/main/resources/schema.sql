@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS "user";
 CREATE TABLE "user" (
     user_id BIGSERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
     dt_created TIMESTAMP NOT NULL,
     is_active BOOLEAN DEFAULT false
 );
@@ -41,7 +41,7 @@ CREATE TABLE post (
 
 CREATE TABLE tag (
     tag_id bigserial PRIMARY KEY,
-    name varchar(50) NOT NULL
+    name varchar(50) NOT NULL UNIQUE
 );
 
 
@@ -71,10 +71,10 @@ insert into role(name) values ('ADMIN');
 insert into role(name) values ('USER');
 
 insert into "user" (username, password, dt_created, is_active)
-    values ('admin', 'admin', now()::timestamp, true);
+    values ('admin', '$2a$10$r2Xwe2787auMUoE0T4Ahl.qm3XwMoN7zzzqrSnwdjtkBF/lZCSDuu', now()::timestamp, true);
 
 insert into "user" (username, password, dt_created, is_active)
-    values ('user1', 'user1', now()::timestamp, true);
+    values ('user1', '$2a$10$73OfGwCsFBmXQYYazs08LufuJD4cNhftOT1jwzlmnQwQ5nXR6IoBi', now()::timestamp, true);
 
 insert into user_role(user_id, role_id) values (1, 1);
 --insert into user_role(user_id, role_id) values (1, 2);
