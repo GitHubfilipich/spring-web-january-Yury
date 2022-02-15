@@ -37,6 +37,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
+
     @Column(name = "is_active")
     private boolean isActive;
 
@@ -97,4 +100,12 @@ public class User implements UserDetails {
     public LocalDateTime getDtCreated() { return dtCreated; }
 
     public void setDtCreated(LocalDateTime dtCreated) { this.dtCreated = dtCreated; }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }

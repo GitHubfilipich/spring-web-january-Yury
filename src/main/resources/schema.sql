@@ -53,6 +53,7 @@ CREATE TABLE post_tag (
 
 CREATE TABLE comment (
     comment_id bigserial PRIMARY KEY,
+    user_id BIGINT REFERENCES "user" (user_id) ON DELETE CASCADE,
     post_id bigint REFERENCES post(post_id) ON DELETE CASCADE,
     content text,
     dt_created timestamp NOT NULL,
@@ -76,9 +77,14 @@ insert into "user" (username, password, dt_created, is_active)
 insert into "user" (username, password, dt_created, is_active)
     values ('user1', '$2a$10$73OfGwCsFBmXQYYazs08LufuJD4cNhftOT1jwzlmnQwQ5nXR6IoBi', now()::timestamp, true);
 
+insert into "user" (username, password, dt_created, is_active)
+    values ('user2', '$2a$10$YJEm/sK7srLoCQKnM4ASPe3Gg33s0ti5aY2sNVnCq2eE3E.ZymyOy', now()::timestamp, true);
+
+
 insert into user_role(user_id, role_id) values (1, 1);
 --insert into user_role(user_id, role_id) values (1, 2);
 insert into user_role(user_id, role_id) values (2, 2);
+insert into user_role(user_id, role_id) values (3, 2);
 
 
 insert into post (title, content, user_id, dt_created, dt_updated)
@@ -105,17 +111,19 @@ insert into post_tag(post_id, tag_id) values (3, 3);
 insert into post_tag(post_id, tag_id) values (3, 2);
 insert into post_tag(post_id, tag_id) values (3, 6);
 
-insert into comment (post_id, content, dt_created)
-    values (2, 'Nice!', current_timestamp);
-insert into comment (post_id, content, dt_created)
-    values (1, 'Awesome!', current_timestamp);
-insert into comment (post_id, content, dt_created)
-    values (1, 'Excellent!', current_timestamp);
-insert into comment (post_id, content, dt_created)
-    values (1, 'Wonderful!', current_timestamp);
-insert into comment (post_id, content, dt_created)
-    values (3, 'Disgusting!', current_timestamp);
-insert into comment (post_id, content, dt_created)
-    values (3, 'Atrocious!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (2, 2, 'Nice!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (1, 2, 'Awesome!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (1, 3, 'Excellent!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (1, 3, 'Wonderful!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (3, 2, 'Disgusting!', current_timestamp);
+insert into comment (post_id, user_id, content, dt_created)
+    values (3, 3, 'Atrocious!', current_timestamp);
 
 select * from post;
+select * from "user";
+select * from "comment";

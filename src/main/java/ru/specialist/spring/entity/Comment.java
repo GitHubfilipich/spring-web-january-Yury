@@ -12,6 +12,10 @@ public class Comment {
     private Long commentId;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -29,6 +33,14 @@ public class Comment {
 
     public void setCommentId(Long commentId) {
         this.commentId = commentId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Post getPost() {
